@@ -1,0 +1,7 @@
+{
+  "db": {
+    "credentials":{
+      "provider":"openshift-env"
+    }
+  }
+}

@@ -4,9 +4,41 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var config = require('config');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var meta = require('./routes/meta');
+
+var mongodb;
+var mongocfg = config.get('db.credentials');
+if(mongocfg.provider == 'openshift-env') {
+  var mongourl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+      process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+      process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+      process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+      process.env.OPENSHIFT_APP_NAME;
+} else if (mongocfg.provider == 'url') {
+  var mongourl = mongocfg.url;
+}
+
+MongoClient.connect(mongourl, (err, db) => {
+  assert.equal(err, null, "Error detected while connecting to MongoDB instance");
+  console.log("Connected correctly to server");
+  mongodb = db;
+  db.collection('meta').find().toArray((err, docs) => {
+      if(err) {
+        console.error("Error while fetching db meta", err);
+      } else {
+        if (docs.length == 0) {
+          console.log("No meta");
+          db.collection('meta').insert({type : "setup", timestamp: new Date()})
+        }
+      }
+  });
+});
 
 var app = express();
 
@@ -22,8 +54,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    if(mongodb)
+        req.db = mongodb;
+    next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/rest/meta', meta);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
