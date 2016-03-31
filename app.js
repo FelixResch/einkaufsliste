@@ -15,7 +15,7 @@ var meta = require('./routes/meta');
 var mongodb;
 var mongocfg = config.get('db.credentials');
 if(mongocfg.provider == 'openshift-env') {
-  var mongourl = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+  var mongourl = 'mongodb://' + process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
       process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
       process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
       process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
