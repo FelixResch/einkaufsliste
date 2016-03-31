@@ -8,14 +8,10 @@ router.get('/', (req, res, next) => {
                console.error(err);
            } else {
                res.json(docs);
-               res.status(200);
-               res.send();
            }
        });
     } else {
         res.json([]);
-        res.status(200);
-        res.send();
     }
 });
 
