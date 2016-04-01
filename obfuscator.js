@@ -1,7 +1,7 @@
 
 function obf(obj, config) {
     if(config && Array.isArray(config) && config.length > 0) {
-        for(i = 0; i < config.length; i++) {
+        for(var i = 0; i < config.length; i++) {
             if(config[i].field) {
                 delete obj[config[i].field];
             }
@@ -11,7 +11,7 @@ function obf(obj, config) {
 
 module.exports = (obj, config) => {
     if(Array.isArray(obj)) {
-        for(j = 0; j < obj.length; j++) {
+        for(var j = 0; j < obj.length; j++) {
             obf(obj[j], config);
         }
     } else {
