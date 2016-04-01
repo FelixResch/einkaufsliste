@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --use_strict ./bin/www"
+    "start": "node --use_strict ./bin/www",
+    "test": "mocha ./test/*"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -21,6 +22,13 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "step":"*",
+    "async": "latest"
+  },
+  "devDependencies": {
+    "supertest": "^1.2.0",
+    "winston": "^2.2.0",
+    "should": "^8.3.0"
   }
 }

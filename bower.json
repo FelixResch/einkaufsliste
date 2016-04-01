@@ -1,0 +1,24 @@
+{
+  "name": "einkaufsliste",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Felix Resch <resch.felix@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/FelixResch/einkaufsliste",
+  "moduleType": [
+    "node"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}

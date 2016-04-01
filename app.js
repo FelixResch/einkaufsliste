@@ -9,17 +9,17 @@ var assert = require('assert');
 var config = require('config');
 var crypto = require('crypto');
 var session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+var MongoStore = require('connect-mongo')(session);
+var async = require('async');
 
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var LocalStrategy = require('passport-local').Strategy;
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-var meta = require('./routes/meta');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
+var rest = require('./routes/rest');
 
 var mongodb;
 var mongocfg = config.get('db.credentials');
@@ -43,11 +43,25 @@ MongoClient.connect(mongourl, (err, db) => {
       } else {
         if (docs.length == 0) {
             console.log("No meta");
-            db.collection('users').insert({username: "root", password: hash("1a2b3c4d5e"), email: "felix.resch@femo.io"}, (err, docs) => {
-                assert.equal(err, null, "Error while inserting user");
-                db.collection('meta').insert({type : "setup", timestamp: new Date()});
-                initPassport();
-            });
+            async.series([
+                (callback) => {
+                    db.collection('users').insert({username: "root", password: hash("1a2b3c4d5e"), role: 'admin', email: "felix.resch@femo.io"}, (err, docs) => {
+                        assert.equal(err, null, "Error while inserting user");
+                        callback();
+                    });
+                },
+                (callback) => {
+                    db.collection('users').insert({username: "test", password: hash("12345"), role: 'user', email: "test.test@testmail.com"}, (err, docs) => {
+                        assert.equal(err, null, "Error while inserting user");
+                        callback();
+                    });
+                },
+                (callback) => {
+                    assert.equal(err, null, "Error while inserting user");
+                    db.collection('meta').insert({type : "setup", timestamp: new Date()});
+                    initPassport();
+                    callback();
+                }])
         } else {
             initPassport()
         }
@@ -93,7 +107,6 @@ function initRouter() {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-
     app.use((req, res, next) => {
         if(mongodb)
             req.db = mongodb;
@@ -101,8 +114,7 @@ function initRouter() {
     });
 
     app.use('/', routes);
-    app.use('/users', users);
-    app.use('/rest/meta', meta);
+    app.use('/rest', rest);
     app.use('/login', login);
     app.use('/logout', logout);
 
@@ -146,11 +158,21 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+if(process.env.NODE_ENV == 'production') {
+    app.use((req, res, next) => {
+        if(req.headers["x-forwarded-proto"] == 'http') {
+            res.redirect('https://' + req.headers.host + req.path);
+        } else {
+            next();
+        }
+    });
+}
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
 
 
 module.exports = app;
