@@ -3,6 +3,11 @@ install:
 language: node_js
 node_js:
 - '5'
+- "5.1"
+- "4"
+- "4.2"
+- "4.1"
+- "4.0"
 deploy:
   provider: openshift
   user: resch.felix@gmail.com
@@ -12,3 +17,5 @@ deploy:
   domain: proxerread
   on:
     repo: FelixResch/einkaufsliste
+    branch: master
+    node: '5'
