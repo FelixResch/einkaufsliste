@@ -30,5 +30,21 @@ module.exports = {
             }
         ],
         strict: true
+    },
+    product: {
+        fields: [
+            {
+                name: 'display',
+                required: true
+            },
+            {
+                name: 'isbn',
+                required: true
+            },
+            {
+                name: 'lastPrice'
+            }
+        ],
+        strict: true
     }
 };

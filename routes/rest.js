@@ -16,5 +16,6 @@ router.get('/', passport.authenticate('basic', {session: false}), (req, res, nex
 
 router.use('/meta', require('./meta'));
 router.use('/users', require('./users'));
+router.use('/products', require('./products'));
 
 module.exports = router;
