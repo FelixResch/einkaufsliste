@@ -94,7 +94,7 @@ function initPassport() {
         });
     };
     passport.use(new BasicStrategy(callback));
-    passport.use(new LocalStrategy(callback))
+    passport.use(new LocalStrategy(callback));
     initRouter();
 }
 
@@ -172,7 +172,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'bower_components')));
+app.use(express.static( path.join(__dirname, '/bower_components')));
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+});
 
 
 module.exports = app;

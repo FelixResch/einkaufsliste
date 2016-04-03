@@ -3,6 +3,8 @@ var router = express.Router();
 var passport = require('passport');
 var obfuscator = require('../obfuscator');
 var crypto = require('crypto');
+var User = require('../types').user;
+var validate = require('../objectValidator');
 
 function hash(password) {
   return crypto.createHash('sha256').update(password).digest('base64');
@@ -14,11 +16,24 @@ router.get('/', passport.authenticate('basic', {session: false}), function(req, 
       if(req.user.role == 'admin') {
           config = [{field: 'password'}]
       } else {
-          config = [{field: 'password'}, {field: '_id'}];
+          config = [{field: 'password'}, {field: '_id'}, {field: 'email', type: 'email'}];
       }
       obfuscator(docs, config);
       res.json(docs);
   });
+});
+
+router.get('/:userId', passport.authenticate('basic', {session: false}), (req, res, next) => {
+    req.db.collection('users').find({_id: req.params.userId}).toArray((err, docs) => {
+        var config = [];
+        if(req.user.role == 'admin') {
+            config = [{field: 'password'}]
+        } else {
+            config = [{field: 'password'}, {field: '_id'}, {field: 'email', type: 'email'}];
+        }
+        obfuscator(docs, config);
+        res.json(docs[0]);
+    });
 });
 
 router.post('/', passport.authenticate('basic', {session: false}), (req, res, next) => {
@@ -37,9 +52,9 @@ router.post('/', passport.authenticate('basic', {session: false}), (req, res, ne
             res.json({reason: 'User already exists!'})
         } else {
             var user = req.body;
-            if(!user.username || !user.password || !user.role || !user.email) {
+            if(!validate.check(user, User)) {
                 res.status(400);
-                res.json({reason: 'Not all fields set!'});
+                res.json({reason: 'Invalid User'});
                 return;
             }
             user.password = hash(user.password);
@@ -61,7 +76,12 @@ var cb0 = (req, res, next) => {
             throw err;
         }
         if(docs.length == 1) {
-            users.update({_id: req.params.userId}, {$set: req.body}, (err, docs) => {
+            if(!validate.update(req.body, User)) {
+                res.status(400);
+                res.json({reason: 'Invalid User'});
+                return;
+            }
+            users.updateOne({_id: req.params.userId}, {$set: req.body}, (err, docs) => {
                 if(err)
                     throw err;
                 res.json(docs);
@@ -75,5 +95,25 @@ var cb0 = (req, res, next) => {
 
 router.put('/:userId', passport.authenticate('basic', {session: false}), cb0);
 router.patch('/:userId', passport.authenticate('basic', {session: false}), cb0);
+
+router.delete('/:userId', passport.authenticate('basic', {session: false}), (req, res, next) => {
+    var users = req.db.collection('users');
+    users.find({_id: req.params.userId}).toArray((err, docs) => {
+        if(err) {
+            throw err;
+        }
+        if(docs.length == 1) {
+            users.deleteOne({_id: req.params.userId}, (err, result) => {
+                if(err) {
+                    throw err;
+                }
+                res.json(result);
+            })
+        } else {
+            res.status(404);
+            res.json({reason: "User not found"})
+        }
+    });
+});
 
 module.exports = router;
