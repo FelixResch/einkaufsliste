@@ -38,7 +38,7 @@ module.exports = {
                 required: true
             },
             {
-                name: 'isbn',
+                name: 'ean13',
                 required: true
             },
             {
