@@ -85,5 +85,54 @@ describe('Types', () => {
                 _id: '1234567980'
             }, Product), "Product should not be valid")
         })
+    });
+    describe('Lists', () => {
+        var List = types.list;
+        it('Correct empty list', () => {
+            assert(validate.check({
+                current: false,
+                timestamp: 10,
+                items: []
+            }, List), 'Valid empty list')
+        });
+        it('Correct list with items', () => {
+            assert(validate.check({
+                current: false,
+                timestamp: 10,
+                items: [
+                    {
+                        display: 'Cola (2l)',
+                        _id: '123456789',
+                        added: 15,
+                        amount: 2
+                    },
+                    {
+                        display: 'Cola (0.5l)',
+                        _id: '123456789',
+                        added: 18,
+                        amount: 4
+                    }
+                ]
+            }, List), 'Valid list with items')
+        });
+        it('List with invalid entry', () => {
+            assert(!validate.check({
+                current: false,
+                timestamp: 10,
+                items: [
+                    {
+                        display: 'Cola (2l)',
+                        _id: '123456789',
+                        added: 15
+                    },
+                    {
+                        display: 'Cola (0.5l)',
+                        _id: '123456789',
+                        added: 18,
+                        amount: 4
+                    }
+                ]
+            }, List), 'List with invalid item')
+        })
     })
 });

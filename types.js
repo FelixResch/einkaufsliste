@@ -49,5 +49,45 @@ module.exports = {
             }
         ],
         strict: true
+    },
+    list: {
+        fields: [
+            {
+                name: 'current',
+                required: true
+            },
+            {
+                name: 'timestamp',
+                required: true,
+                type: 'timestamp'
+            },
+            {
+                name: 'items',
+                type: 'array',
+                itemType: {
+                    fields: [
+                        {
+                            name: '_id',
+                            required: true
+                        },
+                        {
+                            name: 'added',
+                            required: true,
+                            type: 'timestamp'
+                        },
+                        {
+                            name: 'display',
+                            required: true
+                        },
+                        {
+                            name: 'amount',
+                            required: true
+                        }
+                    ],
+                    strict: true
+                }
+            }
+        ],
+        strict: true
     }
 };

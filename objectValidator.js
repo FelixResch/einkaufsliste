@@ -8,12 +8,12 @@ function validate (obj, def) {
         var field = def.fields[i];
         fields.push(field.name);
         if(field.required) {
-            if(!obj[field.name]) {
+            if(!obj.hasOwnProperty(field.name)) {
                 //console.log('Required field ' + field.name + ' not found!');
                 return false;
             }
         }
-        if(obj[field.name]) {
+        if(obj.hasOwnProperty(field.name)) {
             if(field.type) {
                 if(field.type == 'email') {
                     if(!validator.isEmail(obj[field.name])) {
@@ -23,6 +23,20 @@ function validate (obj, def) {
                 } else if (field.type == 'uuid') {
                     if(!validator.isUUID(obj[field.name])) {
                         //console.log('Field ' + field.name + ' is not an uuid (' + obj[field.name] + ')');
+                        return false;
+                    }
+                } else if (field.type == 'array') {
+                    if(Array.isArray(obj[field.name])) {
+                        if(field.itemType) {
+                            for(var k = 0; k < obj[field.name].length; k++) {
+                                if(!validate(obj[field.name][k], field.itemType)) {
+                                    //console.log('Element ' + k + ' of field ' + field.name + ' does not match type definition');
+                                    return false;
+                                }
+                            }
+                        }
+                    } else {
+                        //console.log('Field ' + field.name + ' is not an array');
                         return false;
                     }
                 }
@@ -56,6 +70,20 @@ function validateUpdate(obj, def) {
                 } else if (field.type == 'uuid') {
                     if(!validator.isUUID(obj[field.name])) {
                         //console.log('Field ' + field.name + ' is not an uuid (' + obj[field.name] + ')');
+                        return false;
+                    }
+                } else if (field.type == 'array') {
+                    if(Array.isArray(obj[field.name])) {
+                        if(field.itemType) {
+                            for(var k = 0; k < obj[field.name].length; k++) {
+                                if(!validate(obj[field.name][k], field.itemType)) {
+                                    //console.log('Element ' + k + ' of field ' + field.name + ' does not match type definition');
+                                    return false;
+                                }
+                            }
+                        }
+                    } else {
+                        //console.log('Field ' + field.name + ' is not an array');
                         return false;
                     }
                 }
