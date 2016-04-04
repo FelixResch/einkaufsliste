@@ -42,7 +42,7 @@ router.get('/:productId', passport.authenticate('basic', {session: false}), (req
 router.post('/', passport.authenticate('basic', {session: false}), (req, res, next) => {
     var product = req.body;
     if(validate.check(product, Product)) {
-        if(body._id) {
+        if(product._id) {
             req.db.collection('products').find({_id: product._id}).toArray((err, docs) => {
                 if(err) {
                     throw err;

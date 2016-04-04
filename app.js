@@ -136,6 +136,8 @@ function initRouter() {
                 message: err.message,
                 error: err
             });
+            console.error(err.message);
+            console.error(err.stack);
         });
     }
 

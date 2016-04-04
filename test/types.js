@@ -57,5 +57,33 @@ describe('Types', () => {
         it('Update user with wrong field', () => {
             assert(!validate.update({svn: "123456789"}, User), "User should not be valid");
         })
+    });
+    describe('Products', () => {
+        var Product = types.product;
+        it('Correct product', () => {
+            assert(validate.check({
+                display: 'Cola (2l)',
+                ean13: '123456789'
+            }, Product), "Valid product")
+        });
+        it('Product with additional field', () => {
+            assert(!validate.check({
+                display: 'Cola (2l)',
+                ean13: '123456789',
+                minPrice: 1.24
+            }, Product), "Product should not be valid")
+        });
+        it('Product with missing field', () => {
+            assert(!validate.check({
+                display: 'Cola (2l)'
+            }, Product), "Product should not be valid")
+        });
+        it('Product with optional field', () => {
+            assert(validate.check({
+                display: 'Cola (2l)',
+                ean13: '123456798',
+                _id: '1234567980'
+            }, Product), "Product should not be valid")
+        })
     })
 });

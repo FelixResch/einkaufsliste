@@ -43,6 +43,9 @@ module.exports = {
             },
             {
                 name: 'lastPrice'
+            },
+            {
+                name: '_id'
             }
         ],
         strict: true

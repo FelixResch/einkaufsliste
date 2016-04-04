@@ -61,4 +61,22 @@ describe("Security", function () {
                 })
         })
     });
+    describe('Products', () => {
+        it("Should deny the unauthorized access to the user list", function (done) {
+            request(url)
+                .get("/rest/products")
+                .expect(401, done);
+        });
+        it("Should deny the unauthorized creation of a user", function (done) {
+            request(url)
+                .post("/rest/products")
+                .expect(401, done);
+        });
+        it("Should return the user list", function (done) {
+            request(url)
+                .get("/rest/users")
+                .auth('test', '12345')
+                .expect(200, done);
+        });
+    })
 });
