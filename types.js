@@ -86,6 +86,9 @@ module.exports = {
                     ],
                     strict: true
                 }
+            },
+            {
+                name: '_id'
             }
         ],
         strict: true
