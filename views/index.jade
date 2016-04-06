@@ -1,7 +1,85 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  br
-  a(href='/logout') Logout
+  div.shopping-list
+    div.list-header
+        h1= list ? 'Einkaufsliste' : 'Keine Liste'
+        a.btn.btn-logout#logout(href='/logout')
+            i.fa.fa-sign-out
+            span Auslogen
+    div.list-content
+        ul.list
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+            li.list-item
+                h3 2 x Cola (2l)
+                h4 123456789
+                div.btn-group.pull-right
+                    a.btn(href='/inc/123456789')
+                        i.fa.fa-plus
+                    a.btn(href='/dec/123456879')
+                        i.fa.fa-minus
+                    a.btn(href='/remove/123456789')
+                        i.fa.fa-trash
+    div.list-footer
+        div.row
+            div.col-3
+                a.btn#add-item(href='/add')
+                    i.fa.fa-plus
+                    span Neues Element
+            div.col-3
+                a.btn#new-list(href='/new')
+                    i.fa.fa-trash
+                    span Neue Liste
+            div.col-3
+                a.btn#admin(href='/admin')
+                    i.fa.fa-cogs
+                    span Einstellungen

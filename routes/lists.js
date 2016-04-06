@@ -46,8 +46,8 @@ router.get('/:listId', passport.authenticate('basic', {session: false}), (req, r
 });
 
 router.post('/new', passport.authenticate('basic', {session: false}), (req, res, next) => {
-    var lists = db.req.collection('lists');
-    lists.findOneAndUpdate({current: true}, {$set: {current: false}}, (err, res) => {
+    var lists = req.db.collection('lists');
+    lists.findOneAndUpdate({current: true}, {$set: {current: false}}, (err, result) => {
         if(err) {
             throw err;
         }
@@ -56,6 +56,9 @@ router.post('/new', passport.authenticate('basic', {session: false}), (req, res,
             timestamp: new Date().getTime(),
             items: []
         };
+        if(req.body._id) {
+            list._id = req.body._id;
+        }
         if(validate.check(list, List)) {
            lists.insertOne(list, (err, result) => {
                if(err) {
@@ -124,7 +127,7 @@ var cb0 = (req, res, next) => {
                     } else {
                         db.collection('lists').updateOne({_id: list._id}, {$push: {items: {
                             _id: prod._id,
-                            added: new Date().timestamp,
+                            added: new Date().getTime(),
                             display: prod.display,
                             amount: req.body.amount || 1
                         }}}, (err, result) => {
@@ -194,6 +197,34 @@ var cb2 = (req, res, next) => {
 router.put('/:listId', passport.authenticate('basic', {session: false}), cb2);
 router.patch('/:listId', passport.authenticate('basic', {session: false}), cb2);
 
+router.delete('/current/:productId', passport.authenticate('basic', {session: false}), (req, res, next) => {
+    var db = req.db;
+    req.db.collection('lists').find({current: true}).toArray((err, docs) => {
+        if(docs.length != 1) {
+            res.status(500);
+            res.json({reason: 'Invalid data state'});
+            fixInvalidState(req.db)
+        } else {
+            req.db.collection('lists').find({_id: docs[0]._id, "items._id": req.params.productId}).toArray((err, docs) => {
+                if(err) {
+                    throw err;
+                }
+                if(docs.length != 1) {
+                    res.status(404);
+                    res.json({reason: 'No matching lists found!'})
+                } else {
+                    req.db.collection('lists').updateOne({_id: docs[0]._id}, {$pull: {items: {_id: req.params.productId}}}, (err, result) => {
+                        if(err) {
+                            throw err;
+                        }
+                        res.json(result);
+                    });
+                }
+            })
+        }
+    })
+});
+
 router.delete('/:listId/:productId', passport.authenticate('basic', {session: false}), (req, res, next) => {
     req.db.collection('lists').find({_id: req.params.listId, "items._id": req.params.productId}).toArray((err, docs) => {
         if(err) {
@@ -214,7 +245,7 @@ router.delete('/:listId/:productId', passport.authenticate('basic', {session: fa
 });
 
 router.delete('/:listId', passport.authenticate('basic', {session: false}), (req, res, next) => {
-    req.db.collection('lists').find({_id: req.params.listId, "items._id": req.params.productId}).toArray((err, docs) => {
+    req.db.collection('lists').find({_id: req.params.listId}).toArray((err, docs) => {
         if(err) {
             throw err;
         }
