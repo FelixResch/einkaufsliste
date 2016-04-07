@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    form(method='post',action='/add')
+        div.shopping-list
+            div.list-header
+                h1 Element hinzufügen
+                a.btn.btn-logout#logout(href='/logout')
+                    i.fa.fa-sign-out
+                    span Auslogen
+            div.list-content
+                div.form-item
+                    label(for='product') Produkt
+                    br
+                    select(name='product',id='product')
+                        each product in products
+                            option(value=product._id)= product.display
+                div.form-item
+                    label(for='amount') Anzahl
+                    br
+                    input(name='amount',id='amount',type='number',min='0')
+
+            div.list-footer
+                div.row
+                    div.col-2
+                        a.btn#add-item(href='/')
+                            i.fa.fa-arrow-left
+                            span Zurück
+                    div.col-2
+                        button.btn#new-list(type='submit',name='submit',value='submit')
+                            i.fa.fa-plus
+                            span Hinzufügen

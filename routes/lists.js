@@ -3,6 +3,8 @@ var router = express.Router();
 var passport = require('passport');
 var List = require('../types').list;
 var validate = require('../objectValidator');
+var ObjectId = require('mongodb').ObjectID;
+var validator = require('validator');
 
 function fixInvalidState(db) {
     db.collection('lists').find({current: true}).sort({timestamp: -1}).skip(1).toArray((err, docs) => {
@@ -37,7 +39,8 @@ router.get('/current', passport.authenticate('basic', {session: false}), (req, r
 });
 
 router.get('/:listId', passport.authenticate('basic', {session: false}), (req, res, next) => {
-    req.db.collection('lists').find({_id: req.params.listId}).toArray((err, docs) => {
+    var id = validator.isMongoId(req.params.listId) ? new ObjectId(req.params.listId) : req.params.listId;
+    req.db.collection('lists').find({_id: id}).toArray((err, docs) => {
         if(err) {
             throw err;
         }
@@ -90,7 +93,8 @@ router.post('/', passport.authenticate('basic', {session: false}), (req, res, ne
 
 var cb0 = (req, res, next) => {
     var db = req.db;
-    db.collection('products').find({_id: req.params.productId}).toArray((err, prods) => {
+    var id = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
+    db.collection('products').find({_id: id}).toArray((err, prods) => {
         if(err) {
             throw err;
         }
@@ -148,7 +152,8 @@ router.put('/current/:productId', passport.authenticate('basic', {session: false
 router.patch('/current/:productId', passport.authenticate('basic', {session: false}), cb0);
 
 var cb1 = (req, res, next) => {
-    req.db.collection('lists').find({current: true, "items._id": req.params.productId}).toArray((err, docs) => {
+    var id = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
+    req.db.collection('lists').find({current: true, "items._id": id}).toArray((err, docs) => {
         if(err) {
             throw err;
         }
@@ -156,7 +161,7 @@ var cb1 = (req, res, next) => {
             res.status(404);
             res.json({reason: 'No matching item found in current list!'})
         } else {
-            req.db.collection('lists').updateOne({current: true, "items._id" : req.params.productId}, {"items.$.state": req.params.state == 'tick'}, (err, result) => {
+            req.db.collection('lists').updateOne({current: true, "items._id" : id}, {"items.$.state": req.params.state == 'tick'}, (err, result) => {
                 if(err) {
                     throw err;
                 }
@@ -199,13 +204,14 @@ router.patch('/:listId', passport.authenticate('basic', {session: false}), cb2);
 
 router.delete('/current/:productId', passport.authenticate('basic', {session: false}), (req, res, next) => {
     var db = req.db;
+    var prodId = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
     req.db.collection('lists').find({current: true}).toArray((err, docs) => {
         if(docs.length != 1) {
             res.status(500);
             res.json({reason: 'Invalid data state'});
             fixInvalidState(req.db)
         } else {
-            req.db.collection('lists').find({_id: docs[0]._id, "items._id": req.params.productId}).toArray((err, docs) => {
+            req.db.collection('lists').find({_id: docs[0]._id, "items._id": prodId}).toArray((err, docs) => {
                 if(err) {
                     throw err;
                 }
@@ -213,7 +219,7 @@ router.delete('/current/:productId', passport.authenticate('basic', {session: fa
                     res.status(404);
                     res.json({reason: 'No matching lists found!'})
                 } else {
-                    req.db.collection('lists').updateOne({_id: docs[0]._id}, {$pull: {items: {_id: req.params.productId}}}, (err, result) => {
+                    req.db.collection('lists').updateOne({_id: docs[0]._id}, {$pull: {items: {_id: prodId}}}, (err, result) => {
                         if(err) {
                             throw err;
                         }
@@ -226,7 +232,9 @@ router.delete('/current/:productId', passport.authenticate('basic', {session: fa
 });
 
 router.delete('/:listId/:productId', passport.authenticate('basic', {session: false}), (req, res, next) => {
-    req.db.collection('lists').find({_id: req.params.listId, "items._id": req.params.productId}).toArray((err, docs) => {
+    var prodId = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
+    var listId = validator.isMongoId(req.params.listId) ? new ObjectId(req.params.listId) : req.params.listId;
+    req.db.collection('lists').find({_id: listId, "items._id": prodId}).toArray((err, docs) => {
         if(err) {
             throw err;
         }
@@ -234,7 +242,7 @@ router.delete('/:listId/:productId', passport.authenticate('basic', {session: fa
             res.status(404);
             res.json({reason: 'No matching lists found!'})
         } else {
-            req.db.collection('lists').updateOne({_id: req.params.listId}, {$pull: {items: {_id: req.params.productId}}}, (err, result) => {
+            req.db.collection('lists').updateOne({_id: listId}, {$pull: {items: {_id: prodId}}}, (err, result) => {
                 if(err) {
                     throw err;
                 }

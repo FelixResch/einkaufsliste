@@ -53,6 +53,10 @@ input[type="password"] {
   width: 33.3333333%;
   display: table-cell;
 }
+.row .col-2 {
+  width: 50%;
+  display: table-cell;
+}
 .btn-logout {
   float: right;
   width: auto !important;
@@ -108,7 +112,7 @@ input[type="password"] {
   margin-bottom: 0;
 }
 .shopping-list .list-content ul.list li.list-item h4 {
-  color: lightgray;
+  color: gray;
 }
 .shopping-list .list-footer {
   width: 100%;

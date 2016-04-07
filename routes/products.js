@@ -60,7 +60,7 @@ router.post('/', passport.authenticate('basic', {session: false}), (req, res, ne
                 }
             })
         } else {
-            req.db.collection('products').insertOne({product}, (err, result) => {
+            req.db.collection('products').insertOne(product, (err, result) => {
                 if(err) {
                     throw err;
                 }

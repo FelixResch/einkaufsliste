@@ -8,67 +8,19 @@ block content
             i.fa.fa-sign-out
             span Auslogen
     div.list-content
-        ul.list
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
-            li.list-item
-                h3 2 x Cola (2l)
-                h4 123456789
-                div.btn-group.pull-right
-                    a.btn(href='/inc/123456789')
-                        i.fa.fa-plus
-                    a.btn(href='/dec/123456879')
-                        i.fa.fa-minus
-                    a.btn(href='/remove/123456789')
-                        i.fa.fa-trash
+        if list
+            ul.list
+                each item in list.items
+                    li.list-item
+                        h3= item.amount + ' x ' + item.display
+                        h4= moment(item.added).format('HH:mm DD/MM/YYYY')
+                        div.btn-group.pull-right
+                            a.btn(href='/inc/' + item._id)
+                                i.fa.fa-plus
+                            a.btn(href='/dec/' + item._id)
+                                i.fa.fa-minus
+                            a.btn(href='/remove/' + item._id)
+                                i.fa.fa-trash
     div.list-footer
         div.row
             div.col-3
