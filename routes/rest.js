@@ -14,6 +14,10 @@ router.get('/', passport.authenticate('basic', {session: false}), (req, res, nex
     });
 });
 
+router.check('/', passport.authenticate('basic', {session: false}), (req, res, next) => {
+    res.text('ok');
+});
+
 router.use('/meta', require('./meta'));
 router.use('/users', require('./users'));
 router.use('/products', require('./products'));

@@ -10,10 +10,10 @@ node_js:
 - "4.0"
 services: mongodb
 before_script:
-- sleep 15
 - npm -g install mocha
 - npm start &
 - sleep 5
+after_script: pkill node
 deploy:
   provider: openshift
   user: resch.felix@gmail.com
