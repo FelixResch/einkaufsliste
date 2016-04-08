@@ -14,7 +14,7 @@ router.get('/', passport.authenticate('basic', {session: false}), (req, res, nex
     });
 });
 
-router.check('/', passport.authenticate('basic', {session: false}), (req, res, next) => {
+router.get('/check', passport.authenticate('basic', {session: false}), (req, res, next) => {
     res.text('ok');
 });
 
