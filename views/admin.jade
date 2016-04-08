@@ -1,0 +1,30 @@
+//
+   Created by Felix Resch on 08-Apr-16.
+
+extends layout
+
+block content
+    div.shopping-list
+        div.list-header
+            h1 Einstellungen
+            a.btn.btn-logout#logout(href='/logout')
+                i.fa.fa-sign-out
+                span Abmelden
+        div.list-content
+            a.btn(href='/admin/users')
+                i.fa.fa-users
+                span Benutzerverwaltung
+            br
+            a.btn(href='/admin/products')
+                i.fa.fa-cubes
+                span Produktverwaltung
+        div.list-footer
+            div.row
+                div.col-2
+                    a.btn#add-item(href='/')
+                        i.fa.fa-arrow-left
+                        span Zurück
+                div.col-2
+                    a.btn#new-list(href='/statistics')
+                        i.fa.fa-bar-chart
+                        span Statistiken

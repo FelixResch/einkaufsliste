@@ -3,24 +3,31 @@ extends layout
 block content
   div.shopping-list
     div.list-header
-        h1= list ? 'Einkaufsliste' : 'Keine Liste'
+        h1= list ? (list.items.length == 0 ? 'Leere Einkaufsliste' : 'Einkaufsliste') : 'Keine Liste'
         a.btn.btn-logout#logout(href='/logout')
             i.fa.fa-sign-out
-            span Auslogen
+            span Abmelden
     div.list-content
         if list
             ul.list
                 each item in list.items
                     li.list-item
-                        h3= item.amount + ' x ' + item.display
-                        h4= moment(item.added).format('HH:mm DD/MM/YYYY')
-                        div.btn-group.pull-right
-                            a.btn(href='/inc/' + item._id)
-                                i.fa.fa-plus
-                            a.btn(href='/dec/' + item._id)
-                                i.fa.fa-minus
-                            a.btn(href='/remove/' + item._id)
-                                i.fa.fa-trash
+                        div.item-checkbox
+                            a.btn(href='/' + (item.state ? 'untick' : 'tick') +'/' + item._id)
+                                if item.state
+                                    i.fa.fa-check-square-o
+                                else
+                                    i.fa.fa-square-o
+                        div.item-info
+                            h3= item.amount + ' x ' + item.display
+                            h4= moment(item.added).format('HH:mm DD/MM/YYYY')
+                            div.btn-group.pull-right
+                                a.btn(href='/inc/' + item._id)
+                                    i.fa.fa-plus
+                                a.btn(href='/dec/' + item._id)
+                                    i.fa.fa-minus
+                                a.btn(href='/remove/' + item._id)
+                                    i.fa.fa-trash
     div.list-footer
         div.row
             div.col-3

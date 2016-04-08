@@ -82,6 +82,9 @@ module.exports = {
                         {
                             name: 'amount',
                             required: true
+                        },
+                        {
+                            name: 'state'
                         }
                     ],
                     strict: true

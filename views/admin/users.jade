@@ -1,0 +1,39 @@
+//
+   Created by Felix Resch on 08-Apr-16.
+
+extends ../layout
+
+block content
+    div.shopping-list
+        div.list-header
+            h1 Benutzerverwaltung
+            a.btn.btn-logout#logout(href='/logout')
+                i.fa.fa-sign-out
+                span Abmelden
+        div.list-content
+            if users
+                ul.list
+                    each user in users
+                        li.list-item
+                            div.bordered
+                                h3= user.username
+                                    | [
+                                    a(href='mailto:' + user.email)= user.email
+                                    | ]
+                                h4= user.role
+                                div.btn-group.pull-right
+                                    a.btn(href='/admin/users/edit/' + user._id)
+                                        i.fa.fa-edit
+                                    a.btn(href='/admin/users/remove/' + user._id)
+                                        i.fa.fa-trash
+
+        div.list-footer
+            div.row
+                div.col-2
+                    a.btn#add-item(href='/admin')
+                        i.fa.fa-arrow-left
+                        span Zurück
+                div.col-2
+                    a.btn(href='/admin/user/add')
+                        i.fa.fa-user-plus
+                        span Neuer Benutzer
