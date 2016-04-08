@@ -15,7 +15,7 @@ router.get('/', passport.authenticate('basic', {session: false}), (req, res, nex
 });
 
 router.get('/check', passport.authenticate('basic', {session: false}), (req, res, next) => {
-    res.text('ok');
+    res.json('ok');
 });
 
 router.use('/meta', require('./meta'));
