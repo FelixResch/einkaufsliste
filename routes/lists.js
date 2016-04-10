@@ -116,7 +116,7 @@ var cb0 = (req, res, next) => {
                     var list = docs[0];
                     var found = false;
                     for(var i = 0; i < list.items.length; i++) {
-                        if(isId ? prod._id.equals(list[i]._id) : id == list.items[i]._id) {
+                        if(isId ? prod._id.equals(list.items[i]._id) : id == list.items[i]._id) {
                             found = true;
                             break;
                         }
