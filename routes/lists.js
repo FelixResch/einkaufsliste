@@ -93,7 +93,8 @@ router.post('/', passport.authenticate('basic', {session: false}), (req, res, ne
 
 var cb0 = (req, res, next) => {
     var db = req.db;
-    var id = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
+    var isId = validator.isMongoId(req.params.productId);
+    var id = isId ? new ObjectId(req.params.productId) : req.params.productId;
     db.collection('products').find({_id: id}).toArray((err, prods) => {
         if(err) {
             throw err;
@@ -115,7 +116,7 @@ var cb0 = (req, res, next) => {
                     var list = docs[0];
                     var found = false;
                     for(var i = 0; i < list.items.length; i++) {
-                        if(list.items[i]._id.equals(prod._id)) {
+                        if(isId ? prod._id.equals(list[i]._id) : id == list.items[i]._id) {
                             found = true;
                             break;
                         }
