@@ -40,7 +40,7 @@ router.post('/', loggedin, (req, res, next) => {
                     var insert = () => {
                         req.db.collection('lists').updateOne({_id: list._id}, {$push: {items: {
                             display: product.display,
-                            timestamp: new Date().getTime(),
+                            added: new Date().getTime(),
                             _id: product._id,
                             amount: Number(req.body.amount)
                         }}}, (err, result) => {
