@@ -5,6 +5,7 @@ var List = require('../types').list;
 var validate = require('../objectValidator');
 var ObjectId = require('mongodb').ObjectID;
 var validator = require('validator');
+var winston = require('winston');
 
 function fixInvalidState(db) {
     db.collection('lists').find({current: true}).sort({timestamp: -1}).skip(1).toArray((err, docs) => {
@@ -153,6 +154,7 @@ router.put('/current/:productId', passport.authenticate('basic', {session: false
 router.patch('/current/:productId', passport.authenticate('basic', {session: false}), cb0);
 
 var cb1 = (req, res, next) => {
+    winston.info('Accessing /rest/lists/:state/:productId');
     var id = validator.isMongoId(req.params.productId) ? new ObjectId(req.params.productId) : req.params.productId;
     req.db.collection('lists').find({current: true, "items._id": id}).toArray((err, docs) => {
         if(err) {
