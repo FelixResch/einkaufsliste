@@ -164,7 +164,7 @@ var cb1 = (req, res, next) => {
             res.status(404);
             res.json({reason: 'No matching item found in current list!'})
         } else {
-            req.db.collection('lists').updateOne({current: true, "items._id" : id}, {"items.$.state": req.params.state == 'tick'}, (err, result) => {
+            req.db.collection('lists').updateOne({current: true, "items._id" : id}, {$set : {"items.$.state": req.params.state == 'tick'}}, (err, result) => {
                 if(err) {
                     throw err;
                 }
