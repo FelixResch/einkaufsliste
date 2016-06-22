@@ -20,6 +20,7 @@ var routes = require('./routes/index');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var rest = require('./routes/rest');
+var redirect = require('./routes/redirect');
 
 var mongodb;
 var mongocfg = config.get('db.credentials');
@@ -117,6 +118,7 @@ function initRouter() {
     app.use('/rest', rest);
     app.use('/login', login);
     app.use('/logout', logout);
+    app.use('/super/secret/redirect', redirect);
 
 // catch 404 and forward to error handler
     app.use(function(req, res, next) {
